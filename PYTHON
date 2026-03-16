@@ -1,0 +1,41 @@
+# Lista para armazenar os clientes (simulando um banco de dados temporário)
+banco_de_dados = []
+
+def menu():
+    print("\n--- SISTEMA DE CADASTRO ---")
+    print("1. Cadastrar Cliente")
+    print("2. Listar Clientes")
+    print("3. Sair")
+    return input("Escolha uma opção: ")
+
+while True:
+    opcao = menu()
+
+    if opcao == "1":
+        nome = input("Nome: ")
+        email = input("E-mail: ")
+        telefone = input("Telefone: ")
+        
+        # Criando o registro como um dicionário
+        cliente = {
+            "nome": nome,
+            "email": email,
+            "telefone": telefone
+        }
+        
+        banco_de_dados.append(cliente)
+        print(f"\n✅ {nome} cadastrado com sucesso!")
+
+    elif opcao == "2":
+        print("\n--- CLIENTES CADASTRADOS ---")
+        if not banco_de_dados:
+            print("Nenhum cliente encontrado.")
+        else:
+            for i, cliente in enumerate(banco_de_dados, 1):
+                print(f"{i}. {cliente['nome']} | {cliente['email']} | {cliente['telefone']}")
+
+    elif opcao == "3":
+        print("Saindo do sistema...")
+        break
+    else:
+        print("Opção inválida! Tente novamente.")
