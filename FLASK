@@ -1,0 +1,62 @@
+meu_projeto/
+├── app.py          # Lógica do Python (Backend)
+└── templates/      # Pasta obrigatória para arquivos HTML
+    └── index.html  # Interface do usuário (Frontend)from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Banco de dados temporário (em memória)
+clientes = []
+
+@app.route('/')
+def index():
+    # Renderiza a página principal passando a lista de clientes
+    return render_template('index.html', clientes=clientes)
+
+@app.route('/cadastrar', methods=['POST'])
+def cadastrar():
+    nome = request.form.get('nome')
+    email = request.form.get('email')
+    
+    if nome and email:
+        clientes.append({'nome': nome, 'email': email})
+    
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True) <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Clientes</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        form { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+    <h1>Novo Cliente</h1>
+    <form action="/cadastrar" method="POST">
+        <input type="text" name="nome" placeholder="Nome Completo" required>
+        <input type="email" name="email" placeholder="E-mail" required>
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <h2>Clientes Cadastrados</h2>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>E-mail</th>
+        </tr>
+        {% for cliente in clientes %}
+        <tr>
+            <td>{{ cliente.nome }}</td>
+            <td>{{ cliente.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
