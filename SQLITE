@@ -1,0 +1,63 @@
+import sqlite3
+
+def conectar():
+    return sqlite3.connect('gestao_clientes.db')
+
+def criar_tabela():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            cidade TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+def inserir_cliente(nome, email, cidade):
+    conn = conectar()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO clientes (nome, email, cidade) VALUES (?, ?, ?)", 
+                       (nome, email, cidade))
+        conn.commit()
+        print(f"\n✅ Cliente '{nome}' cadastrado com sucesso!")
+    except sqlite3.IntegrityError:
+        print(f"\n❌ Erro: O email '{email}' já está em uso.")
+    finally:
+        conn.close()
+
+def listar_clientes():
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM clientes")
+    rows = cursor.fetchall()
+    
+    print("\n--- LISTA DE CLIENTES ---")
+    for row in rows:
+        print(f"ID: {row[0]} | Nome: {row[1]} | Email: {row[2]} | Cidade: {row[3]}")
+    conn.close()
+
+# --- MENU PRINCIPAL ---
+criar_tabela()
+
+while True:
+    print("\n1. Cadastrar Cliente")
+    print("2. Listar Clientes")
+    print("3. Sair")
+    opcao = input("Escolha uma opção: ")
+
+    if opcao == "1":
+        n = input("Nome: ")
+        e = input("Email: ")
+        c = input("Cidade: ")
+        inserir_cliente(n, e, c)
+    elif opcao == "2":
+        listar_clientes()
+    elif opcao == "3":
+        break
+    else:
+        print("Opção inválida.")
